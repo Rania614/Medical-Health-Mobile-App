@@ -1,50 +1,68 @@
-# Welcome to your Expo app 👋
+# Medical Health Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+UI implementation of a medical appointment mobile app, built with React Native and Expo. The screens use sample data and are not connected to a backend.
 
-## Get started
+## Screens
 
-1. Install dependencies
+- **Account:** onboarding, login, sign up, and set password.
+- **Doctors:** home, doctors list, and doctor details.
+- **Appointments:** schedule, booking, and appointment summary.
+- **Other:** chat, notifications, profile, edit profile, and settings.
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+React Native 0.81, Expo SDK 54, Expo Router, TypeScript, Expo Vector Icons.
 
-   ```bash
-   npx expo start
-   ```
+## My Role
 
-In the output, you'll find options to open the app in a
+I built the screens and the navigation between them.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Technical Challenges & Solutions
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Challenge: Keeping inputs visible above the keyboard
 
-## Get a fresh project
+**Problem:** On the form and chat screens, the on-screen keyboard can cover the field being typed in, and it behaves differently on iOS and Android.
 
-When you're ready, run:
+**Approach:** Handle the keyboard per platform on every screen that has inputs.
+
+**Solution:** Login, sign up, set password, booking, and chat are wrapped in `KeyboardAvoidingView` with platform-specific behavior. Chat adds an iOS offset for its header, booking keeps taps working while the keyboard is open, and each field uses a matching keyboard type.
+
+**Result:** Fields stay visible while typing on both platforms, and email, phone, and numeric fields open the right keyboard.
+
+### Challenge: A custom screen flow with Expo Router
+
+**Problem:** The design uses its own headers and bottom bar, so the default navigation UI could not be used as is.
+
+**Approach:** Use one stack with native headers hidden and navigate from the custom controls.
+
+**Solution:** The entry route re-exports onboarding so the app opens there. All screens are registered in one stack, custom buttons navigate through `Link asChild`, and back buttons use `router.back()`.
+
+**Result:** The app follows the designed flow from onboarding to home, and from schedule to booking to the appointment summary.
+
+### Challenge: Modeling the booking selections
+
+**Problem:** The booking screen combines a single date, several time slots, a patient type, and a gender choice.
+
+**Approach:** Give each selection typed state that allows only valid values.
+
+**Solution:** The date is a single value, time slots are an array updated by a toggle function, and patient type and gender use TypeScript union types. Active styles are derived from that state.
+
+**Result:** Each control shows its selected state correctly, and invalid option values are caught by TypeScript.
+
+## Known Limitations
+
+- **Sample data:** doctors, appointments, notifications, and chat messages are fixed sample content, with no backend.
+- **No authentication or validation:** the login and sign-up buttons navigate straight to the next screen.
+- **Display-only controls:** the sort chips and the Doctors/Favorite tabs change their highlight but do not change the list.
+- **Booking is not carried forward:** the appointment summary does not use the selections made on the booking screen.
+- **Chat is static:** typed messages are not added to the conversation.
+- **Repeated bottom bar:** it is written into nine screens and not yet extracted into a shared component.
+
+## Getting Started
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Open the app in Expo Go, an Android emulator, or an iOS simulator.
